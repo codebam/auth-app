@@ -11,11 +11,17 @@ export async function GET(request: Request) {
     );
   }
 
+  console.log("Authorization code:", code);
+
   try {
     // Forward the code to the Cloudflare Worker
-    const response = await fetch(
-      `https://your-worker-url.workers.dev/api/auth/callback?code=${code}`,
-    );
+    const workerUrl = `https://auth-worker.codebam.workers.dev/api/auth/callback?code=${code}`;
+    console.log("Making request to worker:", workerUrl);
+
+    const response = await fetch(workerUrl);
+
+    console.log("Worker response status:", response.status);
+    console.log("Worker response data:", await response.json());
 
     if (!response.ok) {
       throw new Error("Failed to fetch access token");
